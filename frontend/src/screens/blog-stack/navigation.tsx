@@ -4,7 +4,6 @@ import { FC } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 const { Navigator, Screen } = createNativeStackNavigator();
 
-
 interface Route {
   name: string;
   component: FC;
@@ -23,7 +22,7 @@ const routes: Route[] = [
 
 export const Navigation: FC = () => {
   return (
-    <Navigator screenOptions={{ headerShown: false }}>
+    <Navigator initialRouteName="blogs" screenOptions={{ headerShown: false }}>
       {routes.map(({ name, component }) => (
         <Screen key={name} name={name} component={component} />
       ))}
