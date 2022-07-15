@@ -1,0 +1,9 @@
+{
+  "withStyles": true,
+  "withFunctions": false,
+  "withProps": true,
+  "withTests": false,
+  "defaultExports": false,
+  "componentsRoot": "./src/components",
+  "screensRoot": "./src/screens"
+}
