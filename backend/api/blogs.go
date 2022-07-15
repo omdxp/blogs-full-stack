@@ -164,7 +164,7 @@ func (s *Server) deleteBlog(c *gin.Context) {
 		return
 	}
 	// update author blogs
-	s.db.Users[s.db.Blogs[id-1].Author-1].Blogs = append(s.db.Users[s.db.Blogs[id-1].Author-1].Blogs, 0)
+	s.db.Users[s.db.Blogs[id-1].Author-1].Blogs = append(s.db.Users[s.db.Blogs[id-1].Author-1].Blogs[:id-1], s.db.Users[s.db.Blogs[id-1].Author-1].Blogs[id:]...)
 
 	// delete blog
 	s.db.Blogs = append(s.db.Blogs[:id-1], s.db.Blogs[id:]...)
