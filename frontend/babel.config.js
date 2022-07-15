@@ -26,6 +26,8 @@ module.exports = function (api) {
             styles: "./src/styles",
             fonts: "./src/fonts",
             store: "./src/store",
+            models: "./src/models",
+            "test-data": "./src/test-data",
           },
         },
       ],
