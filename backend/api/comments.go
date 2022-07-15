@@ -11,8 +11,8 @@ import (
 type Comment struct {
 	ID     int    `json:"id"`
 	Body   string `json:"body"`
-	Author User   `json:"author"`
-	Blog   Blog   `json:"blog"`
+	Author int    `json:"author"`
+	Blog   int    `json:"blog"`
 }
 
 // createCommentRequest struct
@@ -69,10 +69,13 @@ func (s *Server) createComment(c *gin.Context) {
 	comment := Comment{
 		ID:     len(s.db.Comments) + 1,
 		Body:   request.Body,
-		Author: s.db.Users[request.Author],
-		Blog:   s.db.Blogs[request.Blog],
+		Author: request.Author,
+		Blog:   request.Blog,
 	}
 	s.db.Comments = append(s.db.Comments, comment)
+
+	// update blog's comments
+	s.db.Blogs[comment.Blog-1].Comments = append(s.db.Blogs[comment.Blog-1].Comments, comment.ID)
 
 	c.JSON(http.StatusOK, comment)
 }
@@ -110,14 +113,22 @@ func (s *Server) updateComment(c *gin.Context) {
 		return
 	}
 
+	// find comment in dd by id
+	found := false
 	for _, comment := range s.db.Comments {
 		if comment.ID == id {
-			comment.Body = request.Body
-			c.JSON(http.StatusOK, comment)
-			return
+			found = true
+			break
 		}
 	}
-	c.JSON(http.StatusNotFound, gin.H{"error": "Comment not found"})
+	if !found {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Comment not found"})
+		return
+	}
+
+	// update comment
+	s.db.Comments[id-1].Body = request.Body
+	c.JSON(http.StatusOK, gin.H{"updated": id})
 }
 
 // deleteComment deletes a comment
@@ -132,6 +143,8 @@ func (s *Server) deleteComment(c *gin.Context) {
 	for i, comment := range s.db.Comments {
 		if comment.ID == id {
 			s.db.Comments = append(s.db.Comments[:i], s.db.Comments[i+1:]...)
+			// update blog's comments by deleting comment id
+			s.db.Blogs[comment.Blog-1].Comments = append(s.db.Blogs[comment.Blog-1].Comments[:i], s.db.Blogs[comment.Blog-1].Comments[i+1:]...)
 			c.JSON(http.StatusOK, gin.H{"deleted": id})
 			return
 		}

@@ -9,11 +9,11 @@ import (
 
 // Blog struct
 type Blog struct {
-	ID       int       `json:"id"`
-	Title    string    `json:"title"`
-	Body     string    `json:"body"`
-	Author   int       `json:"author"`
-	Comments []Comment `json:"comments"`
+	ID       int    `json:"id"`
+	Title    string `json:"title"`
+	Body     string `json:"body"`
+	Author   int    `json:"author"`
+	Comments []int  `json:"comments"`
 }
 
 // createBlogRequest struct
@@ -64,7 +64,7 @@ func (s *Server) createBlog(c *gin.Context) {
 		Title:    request.Title,
 		Body:     request.Body,
 		Author:   request.AuthorID,
-		Comments: []Comment{},
+		Comments: []int{},
 	}
 	s.db.Blogs = append(s.db.Blogs, blog)
 
