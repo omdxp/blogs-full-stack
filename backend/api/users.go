@@ -55,8 +55,18 @@ func (s *Server) getUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	user := s.db.Users[id]
-	c.JSON(http.StatusOK, user)
+	// find user by id
+	found := false
+	for _, user := range s.db.Users {
+		if user.ID == id {
+			found = true
+		}
+	}
+	if !found {
+		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+		return
+	}
+	c.JSON(http.StatusOK, s.db.Users[id-1])
 }
 
 // updateUser updates a user by id
@@ -72,10 +82,19 @@ func (s *Server) updateUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	user := s.db.Users[id]
-	user.Name = request.Name
-	s.db.Users[id] = user
-	c.JSON(http.StatusOK, user)
+	// find user by id
+	found := false
+	for _, user := range s.db.Users {
+		if user.ID == id {
+			found = true
+		}
+	}
+	if !found {
+		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+		return
+	}
+	s.db.Users[id-1].Name = request.Name
+	c.JSON(http.StatusOK, s.db.Users[id-1])
 }
 
 // deleteUser deletes a user by id
@@ -86,6 +105,18 @@ func (s *Server) deleteUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	s.db.Users = append(s.db.Users[:id], s.db.Users[id+1:]...)
+	// find user by id
+	found := false
+	for _, user := range s.db.Users {
+		if user.ID == id {
+			found = true
+		}
+	}
+	if !found {
+		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+		return
+	}
+	// delete user
+	s.db.Users = append(s.db.Users[:id-1], s.db.Users[id:]...)
 	c.JSON(http.StatusOK, gin.H{"message": "user deleted"})
 }
