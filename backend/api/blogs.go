@@ -12,7 +12,7 @@ type Blog struct {
 	ID       int       `json:"id"`
 	Title    string    `json:"title"`
 	Body     string    `json:"body"`
-	Author   User      `json:"author"`
+	Author   int       `json:"author"`
 	Comments []Comment `json:"comments"`
 }
 
@@ -56,13 +56,14 @@ func (s *Server) createBlog(c *gin.Context) {
 		return
 	}
 
-	author := s.db.Users[request.AuthorID]
+	// update author blogs
+	s.db.Users[request.AuthorID-1].Blogs = append(s.db.Users[request.AuthorID-1].Blogs, len(s.db.Blogs)+1)
 
 	blog := Blog{
 		ID:       len(s.db.Blogs) + 1,
 		Title:    request.Title,
 		Body:     request.Body,
-		Author:   author,
+		Author:   request.AuthorID,
 		Comments: []Comment{},
 	}
 	s.db.Blogs = append(s.db.Blogs, blog)
@@ -78,7 +79,18 @@ func (s *Server) getBlog(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	blog := s.db.Blogs[id]
+	// find blog by id
+	found := false
+	for _, blog := range s.db.Blogs {
+		if blog.ID == id {
+			found = true
+		}
+	}
+	if !found {
+		c.JSON(http.StatusNotFound, gin.H{"error": "blog not found"})
+		return
+	}
+	blog := s.db.Blogs[id-1]
 	c.JSON(http.StatusOK, blog)
 }
 
@@ -96,8 +108,20 @@ func (s *Server) updateBlog(c *gin.Context) {
 		return
 	}
 
-	// Get author from db and return if not found
+	// find blog by id
 	found := false
+	for _, blog := range s.db.Blogs {
+		if blog.ID == id {
+			found = true
+		}
+	}
+	if !found {
+		c.JSON(http.StatusNotFound, gin.H{"error": "blog not found"})
+		return
+	}
+
+	// Get author from db and return if not found
+	found = false
 	for _, user := range s.db.Users {
 		if user.ID == request.AuthorID {
 			found = true
@@ -109,15 +133,14 @@ func (s *Server) updateBlog(c *gin.Context) {
 		return
 	}
 
-	author := s.db.Users[request.AuthorID]
-
 	blog := Blog{
-		Title:  request.Title,
-		Body:   request.Body,
-		Author: author,
+		ID:       id,
+		Title:    request.Title,
+		Body:     request.Body,
+		Author:   request.AuthorID,
+		Comments: s.db.Blogs[id-1].Comments,
 	}
-	s.db.Blogs[id] = blog
-
+	s.db.Blogs[id-1] = blog
 	c.JSON(http.StatusOK, blog)
 }
 
@@ -129,7 +152,21 @@ func (s *Server) deleteBlog(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	blog := s.db.Blogs[id]
-	s.db.Blogs = append(s.db.Blogs[:id], s.db.Blogs[id+1:]...)
-	c.JSON(http.StatusOK, blog)
+	// find blog by id
+	found := false
+	for _, blog := range s.db.Blogs {
+		if blog.ID == id {
+			found = true
+		}
+	}
+	if !found {
+		c.JSON(http.StatusNotFound, gin.H{"error": "blog not found"})
+		return
+	}
+	// update author blogs
+	s.db.Users[s.db.Blogs[id-1].Author-1].Blogs = append(s.db.Users[s.db.Blogs[id-1].Author-1].Blogs, 0)
+
+	// delete blog
+	s.db.Blogs = append(s.db.Blogs[:id-1], s.db.Blogs[id:]...)
+	c.JSON(http.StatusOK, gin.H{"message": "blog deleted"})
 }

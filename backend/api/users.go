@@ -11,7 +11,7 @@ import (
 type User struct {
 	ID    int    `json:"id"`
 	Name  string `json:"name"`
-	Blogs []Blog `json:"blogs"`
+	Blogs []int  `json:"blogs"`
 }
 
 // createUserRequest struct
@@ -40,7 +40,7 @@ func (s *Server) createUser(c *gin.Context) {
 	user := User{
 		ID:    len(s.db.Users) + 1,
 		Name:  request.Name,
-		Blogs: []Blog{},
+		Blogs: []int{},
 	}
 	s.db.Users = append(s.db.Users, user)
 
