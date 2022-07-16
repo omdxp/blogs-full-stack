@@ -38,8 +38,12 @@ export const BlogsScreen: FC<BlogsScreenProps> = ({}) => {
       <EditBlog
         blog={selectedBlog!}
         visible={editBlogVisible}
-        onClose={() => setEditBlogVisible(false)}
+        onClose={() => {
+          setEditBlogVisible(false);
+          setSelectedBlog(null);
+        }}
         onSubmit={(item) => console.log(item)}
+        onDelete={(id) => console.log(id)}
       />
     </View>
   );

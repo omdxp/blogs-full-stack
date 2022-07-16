@@ -6,7 +6,7 @@ const { Navigator, Screen } = createNativeStackNavigator();
 
 interface Route {
   name: string;
-  component: FC;
+  component: FC<any>;
 }
 
 const routes: Route[] = [

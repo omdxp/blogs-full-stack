@@ -34,11 +34,14 @@ export const AddBlog: FC<AddBlogProps> = ({ visible, onClose, onSubmit }) => {
         body,
         author,
       });
+      setTitle("");
+      setBody("");
+      setAuthor(testAuthors[0].id);
       onClose();
     } else {
       alert("Please fill all fields");
     }
-  }, [title, body, author, onClose, onSubmit]);
+  }, [title, body, author, setTitle, setBody, setAuthor, onClose, onSubmit]);
   return (
     <Modal
       presentationStyle="overFullScreen"

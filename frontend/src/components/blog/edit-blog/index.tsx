@@ -22,6 +22,7 @@ interface EditBlogProps {
   visible: boolean;
   onClose: () => void;
   onSubmit: (blog: Omit<Blog, "id" | "comments">) => void;
+  onDelete: (id: number) => void;
 }
 
 export const EditBlog: FC<EditBlogProps> = ({
@@ -29,6 +30,7 @@ export const EditBlog: FC<EditBlogProps> = ({
   visible,
   onClose,
   onSubmit,
+  onDelete,
 }) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -45,6 +47,10 @@ export const EditBlog: FC<EditBlogProps> = ({
       alert("Please fill all fields");
     }
   }, [title, body, author, onClose, onSubmit]);
+  const onDeleteHandler = useCallback(() => {
+    onDelete(blog.id);
+    onClose();
+  }, [blog, onClose, onDelete]);
   useEffect(() => {
     if (blog) {
       setTitle(blog.title);
@@ -94,7 +100,10 @@ export const EditBlog: FC<EditBlogProps> = ({
               />
             ))}
           </Picker>
-          <Button title="Add" onPress={onSubmitHandler} />
+          <View style={EditBlogStyles.row}>
+            <Button title="Submit" onPress={onSubmitHandler} />
+            <Button title="Delete" onPress={onDeleteHandler} color="red" />
+          </View>
         </View>
       </ScrollView>
     </Modal>
