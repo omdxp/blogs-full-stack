@@ -8,10 +8,12 @@ import { BlogsStyles } from "./styles";
 import { EditBlog } from "components/blog/edit-blog";
 import { globalStyles } from "styles";
 import { testBlogs } from "test-data/blogs";
+import { useNavigation } from "@react-navigation/native";
 
 interface BlogsScreenProps {}
 
 export const BlogsScreen: FC<BlogsScreenProps> = ({}) => {
+  const navigation = useNavigation<any>();
   const [addBlogVisible, setAddBlogVisible] = useState(false);
   const [editBlogVisible, setEditBlogVisible] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
@@ -25,7 +27,10 @@ export const BlogsScreen: FC<BlogsScreenProps> = ({}) => {
       />
       <BlogsList
         blogs={testBlogs}
-        onItemPress={(item) => {
+        onItemPress={(item) =>
+          navigation.navigate("blog-details", { blog: item })
+        }
+        onItemLongPress={(item) => {
           setSelectedBlog(item);
           setEditBlogVisible(true);
         }}

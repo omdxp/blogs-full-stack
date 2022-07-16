@@ -7,10 +7,15 @@ import { testAuthors } from "test-data/authors";
 
 interface BlogsListProps {
   blogs: Blog[];
-  onItemPress: (blog: Blog) => void;
+  onItemPress: (item: Blog) => void;
+  onItemLongPress: (blog: Blog) => void;
 }
 
-export const BlogsList: FC<BlogsListProps> = ({ blogs, onItemPress }) => {
+export const BlogsList: FC<BlogsListProps> = ({
+  blogs,
+  onItemPress,
+  onItemLongPress,
+}) => {
   return (
     <FlatList
       data={blogs}
@@ -18,6 +23,7 @@ export const BlogsList: FC<BlogsListProps> = ({ blogs, onItemPress }) => {
       renderItem={({ item }) => (
         <TouchableOpacity
           onPress={() => onItemPress(item)}
+          onLongPress={() => onItemLongPress(item)}
           style={BlogsListStyles.item}
         >
           <Text style={BlogsListStyles.title} numberOfLines={2}>
