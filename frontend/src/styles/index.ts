@@ -1,10 +1,11 @@
 import { StyleSheet } from "react-native";
+import { colors } from "./colors";
 
 export const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: colors.white,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -19,14 +20,15 @@ export const globalStyles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: colors.grayLight,
     padding: 10,
     fontSize: 18,
     borderRadius: 6,
     marginVertical: 10,
+    width: "100%",
   },
   errorText: {
-    color: "red",
+    color: colors.red,
     fontSize: 16,
     marginVertical: 10,
   },
