@@ -14,6 +14,9 @@ export const BlogsListStyles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     width: Dimensions.get("window").width - 40,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   title: {
     fontSize: 18,

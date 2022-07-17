@@ -6,25 +6,35 @@ const { Navigator, Screen } = createMaterialTopTabNavigator();
 
 interface Route {
   name: string;
+  title: string;
   component: FC;
 }
 
 const routes: Route[] = [
   {
-    name: "authors",
-    component: AuthorsScreen,
+    name: "blog-stack",
+    title: "Blogs",
+    component: BlogStack,
   },
   {
-    name: "blog-stack",
-    component: BlogStack,
+    name: "authors",
+    title: "Authors",
+    component: AuthorsScreen,
   },
 ];
 
 export const Navigation: FC = () => {
   return (
     <Navigator initialRouteName="blog-stack">
-      {routes.map(({ name, component }) => (
-        <Screen key={name} name={name} component={component} />
+      {routes.map(({ name, title, component }) => (
+        <Screen
+          key={name}
+          name={name}
+          component={component}
+          options={{
+            title,
+          }}
+        />
       ))}
     </Navigator>
   );

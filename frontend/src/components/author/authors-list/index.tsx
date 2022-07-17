@@ -1,9 +1,9 @@
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { formatDistanceToNow, parseISO } from "date-fns";
 
 import { Author } from "models";
 import { AuthorsListStyles } from "./styles";
 import { FC } from "react";
-import { testAuthors } from "test-data/authors";
 
 interface AuthorsListProps {
   authors: Author[];
@@ -20,10 +20,17 @@ export const AuthorsList: FC<AuthorsListProps> = ({ authors, onItemPress }) => {
           onPress={() => onItemPress(item)}
           style={AuthorsListStyles.item}
         >
-          <Text style={AuthorsListStyles.author}>{item.name}</Text>
-          <Text style={AuthorsListStyles.description}>
-            N° of blogs {item.blogs.length}
-          </Text>
+          <View>
+            <Text style={AuthorsListStyles.author}>{item.name}</Text>
+            <Text style={AuthorsListStyles.description}>
+              N° of blogs {item.blogs.length}
+            </Text>
+          </View>
+          <View>
+            <Text style={AuthorsListStyles.description}>
+              {formatDistanceToNow(parseISO(item.updatedAt))} ago
+            </Text>
+          </View>
         </TouchableOpacity>
       )}
     />

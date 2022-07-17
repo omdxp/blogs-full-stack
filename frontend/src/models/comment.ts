@@ -3,4 +3,6 @@ export interface Comment {
   body: string;
   author: number;
   blog: number;
+  createdAt: string;
+  updatedAt: string;
 }

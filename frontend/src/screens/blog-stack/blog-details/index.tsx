@@ -1,9 +1,8 @@
 import { Blog, Comment } from "models";
 import { Button, ScrollView, Text, View } from "react-native";
 import { FC, useState } from "react";
+import { formatISO, parseISO } from "date-fns";
 
-import { AddComment } from "components/comment/add-comment";
-import { BlogDetailsStyles } from "./styles";
 import { CommentsList } from "components/comment/comments-list";
 import { EditComment } from "components/comment/edit-comment";
 import { globalStyles } from "styles";
@@ -31,7 +30,10 @@ export const BlogDetailsScreen: FC<BlogDetailsScreenProps> = ({ route }) => {
         <Text style={globalStyles.titleText}>{blog.title}</Text>
         <Text style={globalStyles.paragraph}>{blog.body}</Text>
         <Text style={globalStyles.paragraph}>
-          By {testAuthors[blog.author].name}
+          By {testAuthors[blog.author].name} on{" "}
+          {formatISO(parseISO(blog.updatedAt), {
+            representation: "date",
+          })}
         </Text>
       </ScrollView>
       <CommentsList

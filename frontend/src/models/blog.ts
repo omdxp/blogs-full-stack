@@ -4,4 +4,6 @@ export interface Blog {
   body: string;
   author: number;
   comments: number[];
+  createdAt: string;
+  updatedAt: string;
 }

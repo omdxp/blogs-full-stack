@@ -1,4 +1,5 @@
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { formatDistanceToNow, parseISO } from "date-fns";
 
 import { AddComment } from "../add-comment";
 import { Comment } from "models";
@@ -27,7 +28,10 @@ export const CommentsList: FC<CommentsListProps> = ({
           <Text style={CommentsListStyles.body} numberOfLines={5}>
             {item.body}
           </Text>
-          <Text>{testAuthors[item.author].name}</Text>
+          <View>
+            <Text>{testAuthors[item.author].name}</Text>
+            <Text>{formatDistanceToNow(parseISO(item.updatedAt))} ago</Text>
+          </View>
         </TouchableOpacity>
       )}
       ListFooterComponent={() => (

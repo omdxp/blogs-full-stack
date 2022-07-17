@@ -1,4 +1,5 @@
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { formatDistanceToNow, parseISO } from "date-fns";
 
 import { Blog } from "models";
 import { BlogsListStyles } from "./styles";
@@ -26,15 +27,22 @@ export const BlogsList: FC<BlogsListProps> = ({
           onLongPress={() => onItemLongPress(item)}
           style={BlogsListStyles.item}
         >
-          <Text style={BlogsListStyles.title} numberOfLines={2}>
-            {item.title}
-          </Text>
-          <Text style={BlogsListStyles.body} numberOfLines={1}>
-            {item.body}
-          </Text>
-          <Text style={BlogsListStyles.author}>
-            {testAuthors[item.author].name}
-          </Text>
+          <View>
+            <Text style={BlogsListStyles.title} numberOfLines={2}>
+              {item.title}
+            </Text>
+            <Text style={BlogsListStyles.body} numberOfLines={1}>
+              {item.body}
+            </Text>
+            <Text style={BlogsListStyles.author}>
+              {testAuthors[item.author].name}
+            </Text>
+          </View>
+          <View>
+            <Text style={BlogsListStyles.author}>
+              {formatDistanceToNow(parseISO(item.updatedAt))} ago
+            </Text>
+          </View>
         </TouchableOpacity>
       )}
     />
