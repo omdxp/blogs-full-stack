@@ -3,17 +3,20 @@ package api
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 // Blog struct
 type Blog struct {
-	ID       int    `json:"id"`
-	Title    string `json:"title"`
-	Body     string `json:"body"`
-	Author   int    `json:"author"`
-	Comments []int  `json:"comments"`
+	ID        int    `json:"id"`
+	Title     string `json:"title"`
+	Body      string `json:"body"`
+	Author    int    `json:"author"`
+	Comments  []int  `json:"comments"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }
 
 // createBlogRequest struct
@@ -60,11 +63,13 @@ func (s *Server) createBlog(c *gin.Context) {
 	s.db.Users[request.AuthorID-1].Blogs = append(s.db.Users[request.AuthorID-1].Blogs, len(s.db.Blogs)+1)
 
 	blog := Blog{
-		ID:       len(s.db.Blogs) + 1,
-		Title:    request.Title,
-		Body:     request.Body,
-		Author:   request.AuthorID,
-		Comments: []int{},
+		ID:        len(s.db.Blogs) + 1,
+		Title:     request.Title,
+		Body:      request.Body,
+		Author:    request.AuthorID,
+		Comments:  []int{},
+		CreatedAt: time.Now().UTC().Format(time.RFC3339),
+		UpdatedAt: time.Now().UTC().Format(time.RFC3339),
 	}
 	s.db.Blogs = append(s.db.Blogs, blog)
 
@@ -134,11 +139,13 @@ func (s *Server) updateBlog(c *gin.Context) {
 	}
 
 	blog := Blog{
-		ID:       id,
-		Title:    request.Title,
-		Body:     request.Body,
-		Author:   request.AuthorID,
-		Comments: s.db.Blogs[id-1].Comments,
+		ID:        id,
+		Title:     request.Title,
+		Body:      request.Body,
+		Author:    request.AuthorID,
+		Comments:  s.db.Blogs[id-1].Comments,
+		CreatedAt: s.db.Blogs[id-1].CreatedAt,
+		UpdatedAt: time.Now().UTC().Format(time.RFC3339),
 	}
 	s.db.Blogs[id-1] = blog
 	c.JSON(http.StatusOK, blog)

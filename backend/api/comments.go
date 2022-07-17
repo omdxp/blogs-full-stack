@@ -3,16 +3,19 @@ package api
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 // Comment struct
 type Comment struct {
-	ID     int    `json:"id"`
-	Body   string `json:"body"`
-	Author int    `json:"author"`
-	Blog   int    `json:"blog"`
+	ID        int    `json:"id"`
+	Body      string `json:"body"`
+	Author    int    `json:"author"`
+	Blog      int    `json:"blog"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }
 
 // createCommentRequest struct
@@ -67,10 +70,12 @@ func (s *Server) createComment(c *gin.Context) {
 	}
 
 	comment := Comment{
-		ID:     len(s.db.Comments) + 1,
-		Body:   request.Body,
-		Author: request.Author,
-		Blog:   request.Blog,
+		ID:        len(s.db.Comments) + 1,
+		Body:      request.Body,
+		Author:    request.Author,
+		Blog:      request.Blog,
+		CreatedAt: time.Now().UTC().Format(time.RFC3339),
+		UpdatedAt: time.Now().UTC().Format(time.RFC3339),
 	}
 	s.db.Comments = append(s.db.Comments, comment)
 
@@ -128,6 +133,7 @@ func (s *Server) updateComment(c *gin.Context) {
 
 	// update comment
 	s.db.Comments[id-1].Body = request.Body
+	s.db.Comments[id-1].UpdatedAt = time.Now().UTC().Format(time.RFC3339)
 	c.JSON(http.StatusOK, gin.H{"updated": id})
 }
 

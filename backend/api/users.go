@@ -3,15 +3,18 @@ package api
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 // User struct
 type User struct {
-	ID    int    `json:"id"`
-	Name  string `json:"name"`
-	Blogs []int  `json:"blogs"`
+	ID        int    `json:"id"`
+	Name      string `json:"name"`
+	Blogs     []int  `json:"blogs"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }
 
 // createUserRequest struct
@@ -38,9 +41,11 @@ func (s *Server) createUser(c *gin.Context) {
 	}
 
 	user := User{
-		ID:    len(s.db.Users) + 1,
-		Name:  request.Name,
-		Blogs: []int{},
+		ID:        len(s.db.Users) + 1,
+		Name:      request.Name,
+		Blogs:     []int{},
+		CreatedAt: time.Now().UTC().Format(time.RFC3339),
+		UpdatedAt: time.Now().UTC().Format(time.RFC3339),
 	}
 	s.db.Users = append(s.db.Users, user)
 
@@ -94,6 +99,7 @@ func (s *Server) updateUser(c *gin.Context) {
 		return
 	}
 	s.db.Users[id-1].Name = request.Name
+	s.db.Users[id-1].UpdatedAt = time.Now().UTC().Format(time.RFC3339)
 	c.JSON(http.StatusOK, s.db.Users[id-1])
 }
 
