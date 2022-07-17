@@ -38,6 +38,35 @@ func (s *Server) getBlogs(c *gin.Context) {
 	c.JSON(http.StatusOK, s.db.Blogs)
 }
 
+// getBlogsByAuthorID returns all blogs by author id
+func (s *Server) getBlogsByAuthorID(c *gin.Context) {
+	_id := c.Param("id")
+	id, err := strconv.Atoi(_id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	// find blog by id
+	found := false
+	for _, user := range s.db.Users {
+		if user.ID == id {
+			found = true
+			break
+		}
+	}
+	if !found {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Author not found"})
+		return
+	}
+	blogs := []Blog{}
+	for _, blog := range s.db.Blogs {
+		if blog.Author == id {
+			blogs = append(blogs, blog)
+		}
+	}
+	c.JSON(http.StatusOK, blogs)
+}
+
 // createBlog creates a new blog
 func (s *Server) createBlog(c *gin.Context) {
 	var request createBlogRequest

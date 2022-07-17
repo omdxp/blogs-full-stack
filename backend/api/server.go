@@ -40,6 +40,7 @@ func (s *Server) setupRouter() {
 
 	blogs := s.router.Group("/blogs")
 	blogs.GET("/", s.getBlogs)
+	blogs.GET("/author/:id", s.getBlogsByAuthorID)
 	blogs.POST("/", s.createBlog)
 	blogs.GET("/:id", s.getBlog)
 	blogs.PUT("/:id", s.updateBlog)
