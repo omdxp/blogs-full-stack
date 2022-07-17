@@ -1,3 +1,3 @@
-export { Author } from "./author";
-export { Blog } from "./blog";
-export { Comment } from "./comment";
+export { Author, AuthorApiResponse } from "./author";
+export { Blog, BlogApiResponse } from "./blog";
+export { Comment, CommentApiResponse } from "./comment";
