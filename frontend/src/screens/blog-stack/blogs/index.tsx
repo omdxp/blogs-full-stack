@@ -1,4 +1,4 @@
-import { Button, Text, View } from "react-native";
+import { ActivityIndicator, Button, Text, View } from "react-native";
 import { FC, useState } from "react";
 
 import { AddBlog } from "components/blog/add-blog";
@@ -7,8 +7,11 @@ import { BlogsList } from "components/blog/blogs-list";
 import { BlogsStyles } from "./styles";
 import { EditBlog } from "components/blog/edit-blog";
 import { globalStyles } from "styles";
+import { selectAllBlogs } from "store/blogs/selectors/blogs";
 import { testBlogs } from "test-data/blogs";
+import { useGetBlogsQuery } from "store/blogs/endpoints";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 interface BlogsScreenProps {}
 
@@ -17,6 +20,8 @@ export const BlogsScreen: FC<BlogsScreenProps> = ({}) => {
   const [addBlogVisible, setAddBlogVisible] = useState(false);
   const [editBlogVisible, setEditBlogVisible] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
+  const blogs = useSelector(selectAllBlogs);
+  const { isLoading, isSuccess, isError, error } = useGetBlogsQuery(null);
   return (
     <View style={globalStyles.container}>
       <Button title="Add a Blog" onPress={() => setAddBlogVisible(true)} />
@@ -25,16 +30,22 @@ export const BlogsScreen: FC<BlogsScreenProps> = ({}) => {
         onClose={() => setAddBlogVisible(false)}
         onSubmit={(item) => console.log(item)}
       />
-      <BlogsList
-        blogs={testBlogs}
-        onItemPress={(item) =>
-          navigation.navigate("blog-details", { blog: item })
-        }
-        onItemLongPress={(item) => {
-          setSelectedBlog(item);
-          setEditBlogVisible(true);
-        }}
-      />
+      {isLoading && <ActivityIndicator />}
+      {isSuccess && (
+        <BlogsList
+          blogs={blogs}
+          onItemPress={(item) =>
+            navigation.navigate("blog-details", { blog: item })
+          }
+          onItemLongPress={(item) => {
+            setSelectedBlog(item);
+            setEditBlogVisible(true);
+          }}
+        />
+      )}
+      {isError && (
+        <Text style={globalStyles.errorText}>Something went wrong</Text>
+      )}
       <EditBlog
         blog={selectedBlog!}
         visible={editBlogVisible}

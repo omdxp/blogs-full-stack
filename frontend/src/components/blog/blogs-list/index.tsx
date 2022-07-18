@@ -45,6 +45,9 @@ export const BlogsList: FC<BlogsListProps> = ({
           </View>
         </TouchableOpacity>
       )}
+      ListEmptyComponent={() => (
+        <Text style={BlogsListStyles.emptyText}>No blogs found</Text>
+      )}
     />
   );
 };

@@ -32,4 +32,10 @@ export const BlogsListStyles = StyleSheet.create({
     marginBottom: 5,
     color: colors.grayDark,
   },
+  emptyText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginVertical: 10,
+    textAlign: "center",
+  },
 });
